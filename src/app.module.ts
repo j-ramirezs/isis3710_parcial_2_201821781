@@ -2,6 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FotoModule } from './foto/foto.module';
+import { UsuarioModule } from './usuario/usuario.module';
+import { RedSocialModule } from './red-social/red-social.module';
+import { AlbumModule } from './album/album.module';
 
 @Module({
   imports: [
@@ -17,6 +21,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true,
       keepConnectionAlive: true,
     }),
+    FotoModule,
+    UsuarioModule,
+    RedSocialModule,
+    AlbumModule,
   ],
   controllers: [AppController],
   providers: [AppService],
