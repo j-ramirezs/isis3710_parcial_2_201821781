@@ -35,6 +35,31 @@ export class FotoService {
       );
     }
 
+    const medioISO = (100 + 6400) / 2;
+    const medioVelObturacion = (2 + 250) / 2;
+    const medioApertura = (1 + 32) / 2;
+
+    let valoresPorEncimaDelMedio = 0;
+
+    if (foto.ISO > medioISO) {
+      valoresPorEncimaDelMedio++;
+    }
+
+    if (foto.velObturacion > medioVelObturacion) {
+      valoresPorEncimaDelMedio++;
+    }
+
+    if (foto.apertura > medioApertura) {
+      valoresPorEncimaDelMedio++;
+    }
+
+    if (valoresPorEncimaDelMedio > 2) {
+      throw new BusinessLogicException(
+        'Máximo 2 valores deben estar por encima del valor medio de sus cotas',
+        BusinessError.NOT_FOUND,
+      );
+    }
+
     return await this.fotoRepository.save(foto);
   }
 
