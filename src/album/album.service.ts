@@ -80,7 +80,7 @@ export class AlbumService {
     return true;
   }
 
-  async deletAlbum(id: string) {
+  async deleteAlbum(id: string) {
     const album: AlbumEntity = await this.albumRepository.findOne({
       where: { id },
       relations: ['fotos'],

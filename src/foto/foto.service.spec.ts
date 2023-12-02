@@ -42,12 +42,36 @@ describe('FotoService', () => {
     expect(service).toBeDefined();
   });
 
-  it('create should return a new foto', async () => {
+  it('findAllFotos should return a list of fotos', async () => {
+    const fotos: FotoEntity[] = await service.findAllFotos();
+    expect(fotos).not.toBeNull();
+    expect(fotos).toHaveLength(fotosList.length);
+  });
+
+  it('findFotoById should return a foto by id', async () => {
+    const storedFoto: FotoEntity = fotosList[0];
+    const foto: FotoEntity = await service.findFotoById(storedFoto.id);
+    expect(foto).not.toBeNull();
+    expect(foto.id).toEqual(storedFoto.id);
+    expect(foto.ISO).toEqual(storedFoto.ISO);
+    expect(foto.velObturacion).toEqual(storedFoto.velObturacion);
+    expect(foto.apertura).toEqual(storedFoto.apertura);
+    expect(foto.fecha).toEqual(storedFoto.fecha);
+  });
+
+  it('findFotoById should throw an exception for an invalid foto', async () => {
+    await expect(service.findFotoById('0')).rejects.toHaveProperty(
+      'message',
+      'The foto with the given id was not found',
+    );
+  });
+
+  it('createFoto should return a new foto', async () => {
     const foto: FotoEntity = {
       id: '',
-      ISO: 200,
-      velObturacion: 100,
-      apertura: 15,
+      ISO: faker.number.int({ min: 100, max: 3250 }),
+      velObturacion: faker.number.int({ min: 2, max: 126 }),
+      apertura: faker.number.int({ min: 1, max: 15 }),
       fecha: faker.date.past(),
       usuario: null,
       album: null,
@@ -64,5 +88,89 @@ describe('FotoService', () => {
     expect(storedFoto.velObturacion).toEqual(newFoto.velObturacion);
     expect(storedFoto.apertura).toEqual(newFoto.apertura);
     expect(storedFoto.fecha).toEqual(newFoto.fecha);
+  });
+
+  it('createFoto should throw an exception for a foto with invalid ISO', async () => {
+    const foto: FotoEntity = {
+      id: '',
+      ISO: 50,
+      velObturacion: faker.number.int({ min: 2, max: 126 }),
+      apertura: faker.number.int({ min: 1, max: 15 }),
+      fecha: faker.date.past(),
+      usuario: null,
+      album: null,
+    };
+
+    await expect(service.createFoto(foto)).rejects.toHaveProperty(
+      'message',
+      'Invalid ISO',
+    );
+  });
+
+  it('createFoto should throw an exception for a foto with invalid velObturacion', async () => {
+    const foto: FotoEntity = {
+      id: '',
+      ISO: faker.number.int({ min: 100, max: 3250 }),
+      velObturacion: 500,
+      apertura: faker.number.int({ min: 1, max: 15 }),
+      fecha: faker.date.past(),
+      usuario: null,
+      album: null,
+    };
+
+    await expect(service.createFoto(foto)).rejects.toHaveProperty(
+      'message',
+      'Invalid velObturacion',
+    );
+  });
+
+  it('createFoto should throw an exception for a foto with invalid apertura', async () => {
+    const foto: FotoEntity = {
+      id: '',
+      ISO: faker.number.int({ min: 100, max: 3250 }),
+      velObturacion: faker.number.int({ min: 2, max: 126 }),
+      apertura: 50,
+      fecha: faker.date.past(),
+      usuario: null,
+      album: null,
+    };
+
+    await expect(service.createFoto(foto)).rejects.toHaveProperty(
+      'message',
+      'Invalid apertura',
+    );
+  });
+
+  it('createFoto should throw an exception for a foto with invalid combination of parameters', async () => {
+    const foto: FotoEntity = {
+      id: '',
+      ISO: 3500,
+      velObturacion: 150,
+      apertura: 18,
+      fecha: faker.date.past(),
+      usuario: null,
+      album: null,
+    };
+
+    await expect(service.createFoto(foto)).rejects.toHaveProperty(
+      'message',
+      'Máximo 2 valores deben estar por encima del valor medio de sus cotas',
+    );
+  });
+
+  it('deleteFoto should remove a foto', async () => {
+    const foto: FotoEntity = fotosList[0];
+    await service.deleteFoto(foto.id);
+    const storedFoto: FotoEntity = await repository.findOne({
+      where: { id: foto.id },
+    });
+    expect(storedFoto).toBeNull();
+  });
+
+  it('deleteFoto should throw an exception for an invalid foto', async () => {
+    await expect(() => service.deleteFoto('0')).rejects.toHaveProperty(
+      'message',
+      'The foto with the given id was not found',
+    );
   });
 });

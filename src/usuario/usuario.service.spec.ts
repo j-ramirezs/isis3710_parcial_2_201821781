@@ -39,4 +39,64 @@ describe('UsuarioService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('createUsuario should return a new usuario', async () => {
+    const usuario: UsuarioEntity = {
+      id: '',
+      nombre: faker.company.name(),
+      telefono: faker.string.numeric(10),
+      redSocial: null,
+      fotos: [],
+    };
+
+    const newUsuario: UsuarioEntity = await service.createUsuario(usuario);
+    expect(newUsuario).not.toBeNull();
+
+    const storedUsuario: UsuarioEntity = await repository.findOne({
+      where: { id: newUsuario.id },
+    });
+    expect(storedUsuario).not.toBeNull();
+    expect(storedUsuario.id).toEqual(newUsuario.id);
+    expect(storedUsuario.nombre).toEqual(newUsuario.nombre);
+    expect(storedUsuario.telefono).toEqual(newUsuario.telefono);
+  });
+
+  it('createUsuario should throw an exception for a usuario with invalid telefono', async () => {
+    const usuario: UsuarioEntity = {
+      id: '',
+      nombre: faker.company.name(),
+      telefono: faker.string.numeric({ length: { min: 1, max: 9 } }),
+      redSocial: null,
+      fotos: [],
+    };
+
+    await expect(service.createUsuario(usuario)).rejects.toHaveProperty(
+      'message',
+      "The usuario's telefono must have 10 characters",
+    );
+  });
+
+  it('findAllUsuarios should return a list of usuarios', async () => {
+    const usuarios: UsuarioEntity[] = await service.findAllUsuarios();
+    expect(usuarios).not.toBeNull();
+    expect(usuarios).toHaveLength(usuariosList.length);
+  });
+
+  it('findUsuarioById should return an usuario by id', async () => {
+    const storedUsuario: UsuarioEntity = usuariosList[0];
+    const usuario: UsuarioEntity = await service.findUsuarioById(
+      storedUsuario.id,
+    );
+    expect(usuario).not.toBeNull();
+    expect(usuario.id).toEqual(storedUsuario.id);
+    expect(usuario.nombre).toEqual(storedUsuario.nombre);
+    expect(usuario.telefono).toEqual(storedUsuario.telefono);
+  });
+
+  it('findUsuarioById should throw an exception for an invalid usuario', async () => {
+    await expect(service.findUsuarioById('0')).rejects.toHaveProperty(
+      'message',
+      'The usuario with the given id was not found',
+    );
+  });
 });

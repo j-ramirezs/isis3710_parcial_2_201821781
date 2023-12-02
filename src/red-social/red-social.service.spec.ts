@@ -40,4 +40,39 @@ describe('RedSocialService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('createRedSocial should return a new red social', async () => {
+    const redSocial: RedSocialEntity = {
+      id: '',
+      nombre: faker.company.name(),
+      slogan: faker.lorem.sentence(10),
+      usuarios: [],
+    };
+
+    const newRedSocial: RedSocialEntity =
+      await service.createRedSocial(redSocial);
+    expect(newRedSocial).not.toBeNull();
+
+    const storedRedSocial: RedSocialEntity = await repository.findOne({
+      where: { id: newRedSocial.id },
+    });
+    expect(storedRedSocial).not.toBeNull();
+    expect(storedRedSocial.id).toEqual(newRedSocial.id);
+    expect(storedRedSocial.nombre).toEqual(newRedSocial.nombre);
+    expect(storedRedSocial.slogan).toEqual(newRedSocial.slogan);
+  });
+
+  it('createRedSocial should throw an exception for a redSocial with invalid slogan', async () => {
+    const redSocial: RedSocialEntity = {
+      id: '',
+      nombre: faker.company.name(),
+      slogan: faker.lorem.word({ strategy: 'shortest' }),
+      usuarios: [],
+    };
+
+    await expect(service.createRedSocial(redSocial)).rejects.toHaveProperty(
+      'message',
+      'The red social slogan must not be empty and have at least 20 characters',
+    );
+  });
 });
