@@ -1,4 +1,4 @@
-import { FotoEntity } from 'src/foto/foto.entity';
+import { FotoEntity } from '../foto/foto.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

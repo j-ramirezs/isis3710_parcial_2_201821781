@@ -4,7 +4,7 @@ import { UsuarioEntity } from './usuario.entity';
 import {
   BusinessError,
   BusinessLogicException,
-} from 'src/shared/errors/business-errors';
+} from '../shared/errors/business-errors';
 import { Repository } from 'typeorm';
 
 @Injectable()

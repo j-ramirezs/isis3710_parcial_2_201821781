@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import {
   BusinessError,
   BusinessLogicException,
-} from 'src/shared/errors/business-errors';
-import { AlbumEntity } from 'src/album/album.entity';
+} from '../shared/errors/business-errors';
+import { AlbumEntity } from '../album/album.entity';
 
 @Injectable()
 export class FotoService {

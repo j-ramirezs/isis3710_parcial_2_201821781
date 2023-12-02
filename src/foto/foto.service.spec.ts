@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FotoService } from './foto.service';
 import { Repository } from 'typeorm';
 import { FotoEntity } from './foto.entity';
-import { TypeOrmTestingConfig } from 'src/shared/testing-utils/typeorm-testing-config';
+import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { faker } from '@faker-js/faker';
 
