@@ -29,9 +29,9 @@ describe('FotoService', () => {
     fotosList = [];
     for (let i = 0; i < 5; i++) {
       const foto: FotoEntity = await repository.save({
-        ISO: 200,
-        velObturacion: 100,
-        apertura: 15,
+        ISO: faker.number.int({ min: 100, max: 3250 }),
+        velObturacion: faker.number.int({ min: 2, max: 126 }),
+        apertura: faker.number.int({ min: 1, max: 15 }),
         fecha: faker.date.past(),
       });
       fotosList.push(foto);
