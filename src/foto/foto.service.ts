@@ -93,9 +93,19 @@ export class FotoService {
         'The foto with the given id was not found',
         BusinessError.NOT_FOUND,
       );
-    if (foto.album && foto.album.fotos.length == 1)
-      await this.albumRepository.remove(foto.album);
+    const album: AlbumEntity | undefined = foto.album;
 
     await this.fotoRepository.remove(foto);
+
+    if (album) {
+      const albumConFotos = await this.albumRepository.findOne({
+        where: { id: album.id },
+        relations: ['fotos'],
+      });
+
+      if (albumConFotos && albumConFotos.fotos.length === 0) {
+        await this.albumRepository.remove(albumConFotos);
+      }
+    }
   }
 }
