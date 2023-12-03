@@ -35,7 +35,7 @@ export class AlbumController {
     @Param('albumId') albumId: string,
     @Param('fotoId') fotoId: string,
   ) {
-    return await this.addPhotoToAlbum(fotoId, albumId);
+    return await this.albumService.addPhotoToAlbum(fotoId, albumId);
   }
 
   @Delete(':albumId')
