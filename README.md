@@ -1,6 +1,8 @@
 Javier Andrés Ramírez Silva
 201821781
 
+Parte Casa: Los puntos 5 y 6 (Documentación y pruebas de POSTMAN) se encuentran dentro de la carpeta collections, exportados como collections 2.1.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
