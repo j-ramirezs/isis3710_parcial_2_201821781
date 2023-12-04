@@ -1,0 +1,593 @@
+{
+	"info": {
+		"_postman_id": "70819315-abde-42a0-ad8d-e2b8750cf358",
+		"name": "Album",
+		"description": "Colección de postman para la clase Album. En esta colección se documentan las peticiones, y se realizan pruebas de POSTMAN, tanto para casos exitosos como casos fallidos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14462466"
+	},
+	"item": [
+		{
+			"name": "Agregar un album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"idAlbum\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fechaInicio\": \"2020-10-25\",\n    \"fechaFin\": \"2020-11-25\",\n    \"titulo\": \"Primer album\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums"
+					]
+				},
+				"description": "Request para crear exitosamente un album nuevo. La prueba verifica que el album se haya creado exitosamente y almacena en una variable de entorno el id de el nuevo album {{idAlbum}}.\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un album inválido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"   pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(['titulo should not be empty']);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fechaInicio\": \"2020-10-25\",\n    \"fechaFin\": \"2020-11-25\",\n    \"titulo\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums"
+					]
+				},
+				"description": "Request para intentar crear un album nuevo con un título vacío. La prueba verifica que el album no se cree exitosamente y se obtenga un código de respuesta 400, indicando que el título no puede ser vacío.\n\nCódigo HTTP: 404"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un album por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum}}"
+					]
+				},
+				"description": "Request para obtener exitosamente un álbum por id. La prueba verifica que el album se obtenga correctamente. El album obtenido es el creado en la petición \"Agregar un album\".\n\nCódigo HTTP: 200"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un album que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The album with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				},
+				"description": "Request para intentar obtener un álbum con un id que no existe. La prueba verifica que se obtenga un código 404 Not Found y el mensaje \"The album with the given id was not found\".\n\nCódigo HTTP: 404"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una foto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"idFoto\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ISO\": 100,\n    \"velObturacion\": 2,\n    \"apertura\": 1,\n    \"fecha\": \"2020-11-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/fotos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"fotos"
+					]
+				},
+				"description": "Request helper. Se añade una foto para posteriormente asociarla al album previamente creado. Se asegura que la fecha esté dentro del rango válido para el album creado anteriormente.\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una foto a un album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum}}/fotos/{{idFoto}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum}}",
+						"fotos",
+						"{{idFoto}}"
+					]
+				},
+				"description": "Este request busca asociar la foto previamente creada con el album existente. Se espera éxito debido a que tanto el album como la foto existen y la fecha de la foto se encuentra en el rango del álbum\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una foto que no existe a un album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"Can not add foto to album. The foto with the given id does not exist\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum}}/fotos/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum}}",
+						"fotos",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				},
+				"description": "Este request busca asociar una foto no existente con el album existente. Se espera que falle debido a que la foto no existe.\n\nCódigo HTTP: 404"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una foto 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"idFoto2\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ISO\": 100,\n    \"velObturacion\": 2,\n    \"apertura\": 1,\n    \"fecha\": \"2020-12-01\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/fotos",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"fotos"
+					]
+				},
+				"description": "Este request crea una nueva foto con fecha fuera del rango del album creado.\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar una foto inválida a un album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"Foto date must be between album start and end date\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum}}/fotos/{{idFoto2}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum}}",
+						"fotos",
+						"{{idFoto2}}"
+					]
+				},
+				"description": "Este request busca asociar una foto con fecha fuera del rango de un album existente. Se espera que falle debido a que la fecha no se encuentra dentro del rango.\n\nCódigo HTTP: 412"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un album 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"idAlbum2\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fechaInicio\": \"2020-10-25\",\n    \"fechaFin\": \"2020-11-25\",\n    \"titulo\": \"Primer album\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums"
+					]
+				},
+				"description": "Este request añade un album nuevo para ser eliminado en el próximo request.\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"   pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum2}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum2}}"
+					]
+				},
+				"description": "Este request elimina un álbum existente. Se espera éxito debido a que el album existe y no tiene ninguna foto asignada.\n\nCódigo HTTP: 204"
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un album que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The album with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				},
+				"description": "Este request intenta eliminar un álbum no existente. Se espera que falle debido a que el album no existe.\n\nCódigo HTTP: 404"
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar un album con foto asignada",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The album can not be deleted because it has associated fotos\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/albums/{{idAlbum}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"albums",
+						"{{idAlbum}}"
+					]
+				},
+				"description": "Este request intenta eliminar un álbum con una foto asociada. Se espera que falle debido a que el album tiene una foto asignada.\n\nCódigo HTTP: 412"
+			},
+			"response": []
+		}
+	]
+}

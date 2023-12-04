@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "a56fc47a-05ac-4662-bd49-ea5765113cb9",
+		"name": "Usuario",
+		"description": "Colección de postman para la clase Usuario. En esta colección se documentan las peticiones, y se realizan pruebas de POSTMAN, tanto para casos exitosos como casos fallidos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14462466"
+	},
+	"item": [
+		{
+			"name": "Agregar un usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"idUsuario\", data.id);",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Usuario 1\",\n    \"telefono\": \"3503452211\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				},
+				"description": "Request para crear exitosamente un usuario nuevo. La prueba verifica que el usuario se haya creado exitosamente y almacena en una variable de entorno el id del nuevo usuario {{idUsuario}}.\n\nCódigo HTTP: 201"
+			},
+			"response": []
+		},
+		{
+			"name": "Agregar un usuario inválido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql('The usuario\\'s telefono must have 10 characters');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"Usuario 2\",\n    \"telefono\": \"350345221\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				},
+				"description": "Request para crear un usuario con telefono menor a 10 dígitos. La prueba debe fallar debido a que por regla de negocio el telefono debe tener exactamente 10 dígitos.\n\nCódigo HTTP: 412"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un usuario por id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios/{{idUsuario}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios",
+						"{{idUsuario}}"
+					]
+				},
+				"description": "Request para obtener exitosamente un usuario por id. La prueba verifica que el usuario se obtenga correctamente. El usuario obtenido es el creado en la petición \"Agregar un usuario\".\n\nCódigo HTTP: 200"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener un usuario que no existe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The usuario with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/usuarios/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				},
+				"description": "Request para intentar obtener un usuario con un id que no existe. La prueba verifica que se obtenga un código 404 Not Found y el mensaje \"The usuario with the given id was not found\".\n\nCódigo HTTP: 404"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener todos los usuarios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"   pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/usuarios",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				},
+				"description": "Request para obtener exitosamente todos los usuarios. La prueba verifica que los usuarios se obtengan correctamente.\n\nCódigo HTTP: 200"
+			},
+			"response": []
+		}
+	]
+}
