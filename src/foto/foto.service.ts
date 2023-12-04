@@ -19,19 +19,22 @@ export class FotoService {
 
   async createFoto(foto: FotoEntity): Promise<FotoEntity> {
     if (foto.ISO < 100 || foto.ISO > 6400) {
-      throw new BusinessLogicException('Invalid ISO', BusinessError.NOT_FOUND);
+      throw new BusinessLogicException(
+        'Invalid ISO',
+        BusinessError.PRECONDITION_FAILED,
+      );
     }
     if (foto.velObturacion < 2 || foto.velObturacion > 250) {
       throw new BusinessLogicException(
         'Invalid velObturacion',
-        BusinessError.NOT_FOUND,
+        BusinessError.PRECONDITION_FAILED,
       );
     }
 
     if (foto.apertura < 1 || foto.apertura > 32) {
       throw new BusinessLogicException(
         'Invalid apertura',
-        BusinessError.NOT_FOUND,
+        BusinessError.PRECONDITION_FAILED,
       );
     }
 
@@ -56,7 +59,7 @@ export class FotoService {
     if (valoresPorEncimaDelMedio > 2) {
       throw new BusinessLogicException(
         'Máximo 2 valores deben estar por encima del valor medio de sus cotas',
-        BusinessError.NOT_FOUND,
+        BusinessError.PRECONDITION_FAILED,
       );
     }
 
